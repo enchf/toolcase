@@ -1,0 +1,31 @@
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Layout/LineLength:
+  Max: 120
+
+AllCops:
+  TargetRubyVersion: 2.3
+  NewCops: enable
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Layout/LineLength:
+  Max: 120
+
+Style/SingleLineMethods:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/AbcSize:
+  Max: 20
