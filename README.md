@@ -66,6 +66,9 @@ Factory.find_by(:OS) { |object| object.handle?(*args) }
 # Look up if an specific object belongs to the registry.
 Factory.include?(object)
 
+# Look up if an specific object is present in a specific tag.
+Factory.include?(object, :OS)
+
 # Get all registries.
 Factory.registries
 
@@ -96,7 +99,7 @@ An item can be replaced or removed using the item id or the item directly.
 
 ```ruby
 Factory.replace(:linux, Ubuntu)
-Factory.replace(Linux, Ubunut)
+Factory.replace(Linux, Ubuntu)
 Factory.remove(:windows)
 Factory.remove(Windows)
 ```
