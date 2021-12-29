@@ -18,3 +18,7 @@ Style/SingleLineMethods:
 
 Metrics/AbcSize:
   Max: 20
+
+Metrics/MethodLength:
+  Exclude:
+    - 'test/registry_modifications_test.rb'

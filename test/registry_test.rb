@@ -71,7 +71,7 @@ class RegistryTest < Minitest::Test
   def test_default
     assert_equal Foo, Factory.default
     assert_equal Foo, Factory[:id]
-    assert_equals(Foo, Factory.find_by { |handler| handler == Duh })
+    assert_equal(Foo, Factory.find_by { |handler| handler == Duh })
     assert_nil OtherFactory.default
     assert_nil OtherFactory[:id]
     assert_nil(OtherFactory.find_by { |handler| handler == Duh })
