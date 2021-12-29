@@ -28,12 +28,17 @@ class Factory
   register Linux
   register Windows
   register MacOS
+  register { |it| it.do_something }
 
   default InvalidOS
 end
 ```
 
-The `register` method adds an object to the registry. A default object can be assigned using the `default` method.
+The `register` method adds an object to the registry. It can be a block or proc.
+
+A default object can be assigned using the `default` method.
+The default object, if present, will be returned by default in any search that no object is found.
+This applies for the `find_by` and `[]` methods.
 
 `register` methods has the following options:
 
@@ -41,11 +46,8 @@ The `register` method adds an object to the registry. A default object can be as
 class Factory
   extend Toolcase::Registry
 
-  register Linux, tag: :OS   # Registries can be classified, with the registry option.
-                             # If no registry is specified, it will be added to the default one.
-  
-  register OtherStuff, id: :otherstuff    # An item can have an identifier,
-                                          # this is useful to search or replace the item.
+  register Linux, tag: :OS                # Registries can be classified with a tag.
+  register OtherStuff, id: :otherstuff    # An item can have an identifier.
 end
 ```
 
@@ -63,6 +65,12 @@ Factory.find_by(:OS) { |object| object.handle?(*args) }
 
 # Look up if an specific object belongs to the registry.
 Factory.include?(object)
+
+# Get all registries.
+Factory.registries
+
+# Get all tagged registries.
+Factory.registries(:OS)
 ```
 
 If another class inherits from the Factory, its registries are inherited too.
@@ -84,6 +92,14 @@ end
 SpecificRegistry.size   # Returns 3.
 ```
 
+An item can be replaced or removed using the item id or the item directly.
+
+```ruby
+Factory.replace(:linux, Ubuntu)
+Factory.replace(Linux, Ubunut)
+Factory.remove(:windows)
+Factory.remove(Windows)
+```
 
 ## Development
 
