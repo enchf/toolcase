@@ -19,7 +19,71 @@ And then execute:
 
 ## Usage
 
-TODO: Write usage instructions here
+Extend a class to convert it into a strategy factory:
+
+```ruby
+class Factory
+  extend Toolcase::Registry
+
+  register Linux
+  register Windows
+  register MacOS
+
+  default InvalidOS
+end
+```
+
+The `register` method adds an object to the registry. A default object can be assigned using the `default` method.
+
+`register` methods has the following options:
+
+```ruby
+class Factory
+  extend Toolcase::Registry
+
+  register Linux, tag: :OS   # Registries can be classified, with the registry option.
+                             # If no registry is specified, it will be added to the default one.
+  
+  register OtherStuff, id: :otherstuff    # An item can have an identifier,
+                                          # this is useful to search or replace the item.
+end
+```
+
+An object can be located in different ways:
+
+```ruby
+# By id.
+Factory[:otherstuff]
+
+# Using the find_by function, which will search through all registries.
+Factory.find_by { |object| object.handle?(*args) }
+
+# Search only through items with a specific tag.
+Factory.find_by(:OS) { |object| object.handle?(*args) }
+
+# Look up if an specific object belongs to the registry.
+Factory.include?(object)
+```
+
+If another class inherits from the Factory, its registries are inherited too.
+An useful use case is a validator registry, with common validators in base classes,
+and specific validators in concrete classes.
+
+```ruby
+class BaseRegistry
+  extend Toolcase::Registry
+
+  register BaseValidator
+  register NonEmpty
+end
+
+class SpecificRegistry < BaseRegistry
+  register SpecificValidator
+end
+
+SpecificRegistry.size   # Returns 3.
+```
+
 
 ## Development
 
