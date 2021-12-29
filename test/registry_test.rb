@@ -62,10 +62,8 @@ class RegistryTest < Minitest::Test
   # Testing starts
 
   def test_methods_available
-    %i[register default [] find_by include? size replace remove registries].each do |method|
-      assert_respond_to A, method, "Method: #{method} on class"
-      refute_respond_to A.new, method, "Method: #{method} on instance"
-    end
+    methods = %i[register default [] find_by include? size replace remove registries]
+    methods.each { |method| assert_respond_to A, method, "Method: #{method} on class" }
   end
 
   def test_register
@@ -82,10 +80,10 @@ class RegistryTest < Minitest::Test
   def test_default
     assert_equals Foo, Factory.default
     assert_equals Foo, Factory[:id]
-    assert_equals Foo, Factory.find_by { |handler| handler == Duh }
+    assert_equals(Foo, Factory.find_by { |handler| handler == Duh })
     assert_nil OtherFactory.default
     assert_nil OtherFactory[:id]
-    assert_nil OtherFactory.find_by { |handler| handler == Duh }
+    assert_nil(OtherFactory.find_by { |handler| handler == Duh })
   end
 
   def test_find_by
@@ -155,15 +153,6 @@ class RegistryTest < Minitest::Test
     assert_equal(Foo, SubSubFactory.find_by { |handler| handler.name.end_with?('Foo') })
   end
 
-  class TaggedFactory
-    extend Toolcase::Registry
-    register Foo
-    register Bar, tag: :tagged
-    register Baz, tag: :other
-    register Boo, tag: :tagged
-    register Woo
-  end
-
   def test_tagged_items
     assert_nil(TaggedFactory.find_by(:tagged) { |item| item == Foo })
     assert_nil(TaggedFactory.find_by(:tagged) { |item| item == Baz })
@@ -177,10 +166,7 @@ class RegistryTest < Minitest::Test
   end
 
   def test_can_register_blocks
-    ExecutableFactory.registries.all? do |block|
-      assert_respond_to block, :call
-    end
-
+    ExecutableFactory.registries.all? { |block| assert_respond_to block, :call }
     assert_equals 1, ExecutableFactory.first.call(0)
     assert_equals '0', ExecutableFactory.last.call(0)
   end
