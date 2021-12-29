@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "toolcase/version"
+require_relative "toolcase/registry"
 
 module Toolcase
-  class Error < StandardError; end
-  # Your code goes here...
 end
