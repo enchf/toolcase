@@ -2,10 +2,14 @@
 
 module Toolcase
   module Registry
-    def register(object, id: nil, tag: :default)
+    def register(object = nil, id: nil, tag: :default, &block)
+      element = nil
+      element = object unless object.nil?
+      element = block if block_given?
+      registries << element unless element.nil? || include?(element)
     end
 
-    def default(object)
+    def default(object = nil)
     end
 
     def [](id)
@@ -28,12 +32,12 @@ module Toolcase
 
     def inherited(child)
       super
-      child.registries.merge!(registries)
+      child.registries.concat(registries)
       child.default(default)
     end
 
     def registries(tag = nil)
-      @registries ||= {}
+      @registries ||= []
     end
   end
 end
