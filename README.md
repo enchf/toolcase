@@ -41,11 +41,8 @@ The `register` method adds an object to the registry. A default object can be as
 class Factory
   extend Toolcase::Registry
 
-  register Linux, tag: :OS   # Registries can be classified, with the registry option.
-                             # If no registry is specified, it will be added to the default one.
-  
-  register OtherStuff, id: :otherstuff    # An item can have an identifier,
-                                          # this is useful to search or replace the item.
+  register Linux, tag: :OS                # Registries can be classified with a tag.
+  register OtherStuff, id: :otherstuff    # An item can have an identifier.
 end
 ```
 
@@ -84,6 +81,11 @@ end
 SpecificRegistry.size   # Returns 3.
 ```
 
+An item can be replaced using the item id:
+
+```ruby
+Factory.replace(:linux, Ubuntu)
+```
 
 ## Development
 
