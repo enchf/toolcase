@@ -57,6 +57,10 @@ module Toolcase
       end
     end
 
+    def clear(tag = nil)
+      registries(tag).each { |object| remove(object) }
+    end
+
     def inherited(child)
       super
       child.elements.concat(registries)

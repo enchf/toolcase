@@ -23,9 +23,7 @@ class RegistryModificationsTest < Minitest::Test
   end
 
   def test_avoid_duplicates
-    @factory.register(Bart)
-    @factory.register(Lisa)
-    @factory.register(Bart)
+    [Bart, Lisa, Bart].each { |element| @factory.register element }
 
     assert_equal 2, @factory.size
     assert_equal [Bart, Lisa], @factory.registries
@@ -108,5 +106,35 @@ class RegistryModificationsTest < Minitest::Test
     assert_equal [Lisa], sub_factory.registries
     assert_equal [Lisa], sub_factory.registries(:children)
     assert_nil sub_factory[:bad]
+  end
+
+  def test_clear
+    register_all
+    @factory.clear
+
+    [[], [:males], [:females]].each { |args| assert @factory.registries(*args).empty? }
+    [@factory[:son], @factory[:first_daughter]].each { |element| refute element }
+  end
+
+  def test_clear_tagged
+    register_all
+    @factory.clear(:males)
+
+    assert @factory.registries(:males).empty?
+    [[], [:females]].each { |args| refute @factory.registries(*args).empty? }
+
+    refute @factory[:son]
+    assert @factory[:first_daughter]
+  end
+
+  private
+
+  def register_all
+    @factory.register Bart, id: :son, tag: :males
+    @factory.register Nelson, tag: :males
+    @factory.register Lisa, id: :first_daughter, tag: :females
+    @factory.register Maggie, tag: :females
+    @factory.register Hugo
+    @factory.register Milhouse
   end
 end
