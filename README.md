@@ -104,6 +104,13 @@ Factory.remove(:windows)
 Factory.remove(Windows)
 ```
 
+A registry can be cleared completely or by tag.
+
+```ruby
+Factory.clear(:linux)
+Factory.clear
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
