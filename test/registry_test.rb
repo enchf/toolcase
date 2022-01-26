@@ -106,6 +106,10 @@ class RegistryTest < Minitest::Test
     refute_equal Factory.registries, OtherFactory.registries
   end
 
+  def test_tags
+    assert_equal %i[tagged other], TaggedFactory.tags
+  end
+
   def test_inheritance
     refute_equal Factory.default, SubFactory.default
     assert_equal [Bar, Baz, Duh], SubFactory.registries
