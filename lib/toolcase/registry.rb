@@ -73,6 +73,10 @@ module Toolcase
       container(tag).clone.freeze
     end
 
+    def tags
+      tagged_elements.keys.reject { |key| key == :nil }
+    end
+
     protected
 
     EMPTY = [].freeze
