@@ -3,7 +3,7 @@
 require "test_helper"
 
 class DefaultTest < Minitest::Test
-  class Sparta; end 
+  class Sparta; end
   class Slavia; end
   class Dukla; end
   class Bohemians; end
@@ -16,6 +16,6 @@ class DefaultTest < Minitest::Test
   end
 
   def test_default_retrieved
-    assert_equal Sparta, Factory.find_by { |team| team == Slavia }
+    assert_equal(Sparta, Factory.find_by { |team| team == Slavia })
   end
 end

@@ -3,7 +3,7 @@
 require "test_helper"
 
 class TagsTest < Minitest::Test
-  class Bart; end 
+  class Bart; end
   class Lisa; end
   class Maggie; end
   class Hugo; end
@@ -31,5 +31,9 @@ class TagsTest < Minitest::Test
 
   def test_default_retrieved_from_empty_tagged_set
     assert_equal Hugo, Factory.find_by(:male) { |_| false }
+  end
+
+  def test_retrieve_all_tags
+    assert_equal %i[male family female], Factory.tags
   end
 end

@@ -15,7 +15,7 @@ class SizeTest < Minitest::Test
     register Baricco
     default Calvino
   end
-  
+
   def test_size
     assert_equal 2, Factory.size
     Factory.register Saviano

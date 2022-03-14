@@ -34,9 +34,9 @@ class InheritanceTest < Minitest::Test
   end
 
   def test_defaults
-    assert_equal C, Factory.find_by { false }
-    assert_equal C, SubFactory.find_by { false }
-    assert_equal F, SubSubFactory.find_by { false }
+    assert_equal(C, Factory.find_by { false })
+    assert_equal(C, SubFactory.find_by { false })
+    assert_equal(F, SubSubFactory.find_by { false })
   end
 
   def test_tags

@@ -67,7 +67,7 @@ module Toolcase
     end
 
     def tags
-      container.values.flat_map(&:last).uniq
+      container.values.flat_map { |_, tags| tags.to_a }.uniq
     end
 
     protected
@@ -79,14 +79,14 @@ module Toolcase
     end
 
     def subset(tag)
-      container.values.select do |value, tags|
+      container.values.select do |_, tags|
         tag.nil? || tags.include?(tag)
       end.map(&:first)
     end
 
     def object_or_id(obj_or_id)
       id = container.key?(obj_or_id) ? obj_or_id : container.find { |_, (value, _)| value == obj_or_id }&.first
-      
+
       yield(id) unless id.nil?
     end
 

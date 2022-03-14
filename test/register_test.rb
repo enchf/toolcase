@@ -3,7 +3,7 @@
 require "test_helper"
 
 class RegisterTest < Minitest::Test
-  class Windows; end 
+  class Windows; end
   class Linux; end
   class MacOS; end
   class Solaris; end

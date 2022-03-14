@@ -18,11 +18,11 @@ class FindByTest < Minitest::Test
   end
 
   def test_find_by
-    assert_equal River, Factory.find_by { |team| team.name.include?('River') }
+    assert_equal(River, Factory.find_by { |team| team.name.include?('River') })
   end
 
   def test_return_default
-    assert_equal Huracan, Factory.find_by { |team| team.name.include?('Estudiantes') }
+    assert_equal(Huracan, Factory.find_by { |team| team.name.include?('Estudiantes') })
   end
 
   def test_find_in_set
