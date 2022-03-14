@@ -4,7 +4,7 @@ module Toolcase
   # Registry mixin. Allows to convert a class into a registrable container.
   # It can then be used to register strategies/handlers and use the class as an abstract factory.
   module Registry
-    def register(object = nil, id: nil, tag: :nil, &block)
+    def register(object = nil, id: nil, tag: :nil, tags: EMPTY, &block)
       element = nil
       element = object unless object.nil?
       element = block if block_given?
