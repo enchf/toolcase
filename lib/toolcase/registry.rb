@@ -71,6 +71,10 @@ module Toolcase
       container.values.flat_map { |_, tags| tags.to_a }.uniq
     end
 
+    def identifiers(tag = nil)
+      entries_by_tag(tag).keys
+    end
+
     protected
 
     EMPTY = [].freeze
@@ -80,9 +84,11 @@ module Toolcase
     end
 
     def subset(tag)
-      container.values.select do |_, tags|
-        tag.nil? || tags.include?(tag)
-      end.map(&:first)
+      entries_by_tag(tag).values.map(&:first)
+    end
+
+    def entries_by_tag(tag)
+      container.select { |_, (_, tags)| tag.nil? || tags.include?(tag) }
     end
 
     def object_or_id(obj_or_id)
