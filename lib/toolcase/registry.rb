@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module Toolcase
   # Registry mixin. Allows to convert a class into a registrable container.
   # It can then be used to register strategies/handlers and use the class as an abstract factory.
   module Registry
-    def register(object = nil, id: nil, tag: :nil, tags: EMPTY, &block)
+    def register(object = nil, id: default_id, tags: EMPTY, &block)
+      return if container.key?(id)
+
       element = nil
       element = object unless object.nil?
       element = block if block_given?
 
-      return if element.nil? || include?(element)
+      tags = tags.is_a?(Array) ? tags : [tags]
 
-      elements << element
-      tagged_elements[tag] << element
-      identifiers[id] = element unless id.nil?
-
-      element
+      container[id] = [element, Set.new(tags)]
     end
 
     def default(object = nil)
@@ -24,91 +24,74 @@ module Toolcase
     end
 
     def [](id)
-      identifiers.fetch(id, default)
+      container.key?(id) ? container[id].first : default
     end
 
     def find_by(tag = nil, &block)
-      container(tag).find(-> { default }, &block)
+      subset(tag).find(-> { default }, &block)
     end
 
     def include?(object, tag = nil)
-      container(tag).include?(object)
+      subset(tag).include?(object)
     end
 
     def size(tag = nil)
-      container(tag).size
+      subset(tag).size
     end
 
-    def replace(old_object_or_id, new_object)
-      resolve_object_or_id(old_object_or_id) do |id, element|
-        identifiers[id] = new_object unless id.nil?
-        elements[elements.index(element)] = new_object
-
-        tagged_list = find_in_tagged(element)
-        tagged_list[tagged_list.index(element)] = new_object unless tagged_list.nil?
+    def replace(old, new_object)
+      object_or_id(old) do |id|
+        old_tuple = container[id]
+        container[id] = [new_object, old_tuple.last]
       end
     end
 
-    def remove(object_or_id)
-      resolve_object_or_id(object_or_id) do |id, element|
-        identifiers.delete(id)
-        elements.delete(element)
-        find_in_tagged(element)&.delete(element)
+    def remove(value_or_id)
+      object_or_id(value_or_id) do |id|
+        container.delete(id)
       end
     end
 
     def clear(tag = nil)
-      registries(tag).each { |object| remove(object) }
+      subset(tag).each { |object| remove(object) }
     end
 
     def inherited(child)
       super
-      child.elements.concat(registries)
-      child.tagged_elements.merge!(tagged_elements)
-      child.identifiers.merge!(identifiers)
+      child.container.merge!(container)
       child.default(default)
     end
 
     def registries(tag = nil)
-      container(tag).clone.freeze
+      subset(tag)
     end
 
     def tags
-      tagged_elements.keys.reject { |key| key == :nil }
+      container.values.flat_map(&:last).uniq
     end
 
     protected
 
     EMPTY = [].freeze
 
-    def elements
-      @elements ||= []
+    def container
+      @container ||= {}
     end
 
-    def resolve_object_or_id(obj_or_id)
-      id = identifiers.key?(obj_or_id) ? obj_or_id : identifiers.find { |_, value| value == obj_or_id }&.first
-      element = id.nil? ? obj_or_id : identifiers[id]
-      return unless include?(element)
-
-      yield(id, element)
+    def subset(tag)
+      container.values.select do |value, tags|
+        tag.nil? || tags.include?(tag)
+      end.map(&:first)
     end
 
-    def tagged_elements
-      @tagged_elements ||= Hash.new { |hash, key| hash[key] = [] }
+    def object_or_id(obj_or_id)
+      id = container.key?(obj_or_id) ? obj_or_id : container.find { |_, (value, _)| value == obj_or_id }&.first
+      
+      yield(id) unless id.nil?
     end
 
-    def find_in_tagged(element)
-      tagged_elements.find { |_, list| list.include?(element) }&.last
-    end
-
-    def identifiers
-      @identifiers ||= {}
-    end
-
-    def container(tag)
-      return elements if tag.nil?
-
-      tagged_elements.key?(tag) ? tagged_elements[tag] : EMPTY
+    def default_id
+      SecureRandom.uuid
     end
   end
 end

@@ -29,8 +29,8 @@ class InheritanceTest < Minitest::Test
 
   def test_all_registries
     assert_equal [A, B], Factory.registries
-    assert_equal [A, B, D], Factory.registries
-    assert_equal [A, B, D, E], Factory.registries
+    assert_equal [A, B, D], SubFactory.registries
+    assert_equal [A, B, D, E], SubSubFactory.registries
   end
 
   def test_defaults
